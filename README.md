@@ -17,7 +17,6 @@ This project showcases a complete microservices architecture with:
 - [Architecture](#-architecture)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
-- [Quick Start](#-quick-start)
 - [API Documentation](#-api-documentation)
 - [Monitoring](#-monitoring)
 - [Project Structure](#-project-structure)
@@ -148,56 +147,6 @@ This project showcases a complete microservices architecture with:
 
 ---
 
-## 🚀 Quick Start
-
-### Prerequisites
-- Docker Desktop 4.0+
-- Go 1.23+ (for local development)
-- grpcurl (for testing)
-
-### Installation
-
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/user-management-system.git
-cd user-management-system
-```
-
-2. **Start all services**
-```bash
-# Build Docker images
-make build
-
-# Start all services
-make up
-
-# Wait for services to be healthy (60 seconds)
-sleep 60
-
-# Verify services are running
-make ps
-```
-
-3. **Test the API**
-```bash
-# Install grpcurl
-brew install grpcurl
-
-# List available services
-grpcurl -plaintext localhost:50051 list
-
-# Create a test user
-grpcurl -plaintext -d '{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "city": "New York",
-  "phone": "555-0100",
-  "married": true
-}' localhost:50051 user.UserService/CreateUser
-```
-
----
-
 ## 📚 API Documentation
 
 ### User Service Endpoints
@@ -300,22 +249,6 @@ grpcurl -plaintext -d '{
 3. **Database Metrics** - Query performance, connection pool
 4. **Kafka Metrics** - Message throughput, consumer lag
 5. **System Health** - CPU, memory, active connections
-
-### Logs
-
-```bash
-# View all logs
-make logs
-
-# User service logs
-make logs-user
-
-# Analytics service logs
-make logs-analytics
-
-# Follow logs in real-time
-docker compose logs -f user-service
-```
 
 ---
 
