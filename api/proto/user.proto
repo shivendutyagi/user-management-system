@@ -1,0 +1,156 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "user-management-system/api/proto;pb";
+
+import "google/protobuf/timestamp.proto";
+
+// User Service handles all user operations
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (UserResponse) {}
+  rpc GetUser (GetUserRequest) returns (UserResponse) {}
+  rpc UpdateUser (UpdateUserRequest) returns (UserResponse) {}
+  rpc DeleteUser (DeleteUserRequest) returns (APIResponse) {}
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse) {}
+  rpc SearchUsers (SearchRequest) returns (ListUsersResponse) {}
+  rpc BatchCreateUsers (stream CreateUserRequest) returns (BatchResponse) {}
+  rpc GetUsersByIds (GetUsersByIdsRequest) returns (ListUsersResponse) {}
+}
+
+// Analytics Service for user analytics
+service AnalyticsService {
+  rpc GetUserStats (UserStatsRequest) returns (UserStatsResponse) {}
+  rpc GetUserActivity (UserActivityRequest) returns (UserActivityResponse) {}
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string city = 4;
+  string phone = 5;
+  bool married = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  map<string, string> metadata = 9;
+  UserStatus status = 10;
+}
+
+enum UserStatus {
+  ACTIVE = 0;
+  INACTIVE = 1;
+  SUSPENDED = 2;
+  DELETED = 3;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+  string city = 3;
+  string phone = 4;
+  bool married = 5;
+  map<string, string> metadata = 6;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  optional string name = 2;
+  optional string email = 3;
+  optional string city = 4;
+  optional string phone = 5;
+  optional bool married = 6;
+  map<string, string> metadata = 7;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+  bool soft_delete = 2;
+}
+
+message GetUsersByIdsRequest {
+  repeated string ids = 1;
+}
+
+message ListUsersRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string sort_by = 3;
+  bool ascending = 4;
+}
+
+message SearchRequest {
+  string query = 1;
+  SearchFilters filters = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message SearchFilters {
+  optional string city = 1;
+  optional bool married = 2;
+  optional UserStatus status = 3;
+}
+
+message UserResponse {
+  bool success = 1;
+  string message = 2;
+  User user = 3;
+  string error = 4;
+}
+
+message ListUsersResponse {
+  bool success = 1;
+  repeated User users = 2;
+  int32 total_count = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+  string error = 6;
+}
+
+message APIResponse {
+  bool success = 1;
+  string message = 2;
+  string error = 3;
+}
+
+message BatchResponse {
+  bool success = 1;
+  int32 total_processed = 2;
+  int32 successful = 3;
+  int32 failed = 4;
+  repeated string errors = 5;
+}
+
+// Analytics Messages
+message UserStatsRequest {
+  google.protobuf.Timestamp start_date = 1;
+  google.protobuf.Timestamp end_date = 2;
+}
+
+message UserStatsResponse {
+  int64 total_users = 1;
+  int64 active_users = 2;
+  int64 new_users_today = 3;
+  map<string, int64> users_by_city = 4;
+  double avg_users_per_day = 5;
+}
+
+message UserActivityRequest {
+  string user_id = 1;
+  int32 limit = 2;
+}
+
+message UserActivityResponse {
+  repeated ActivityEvent events = 1;
+}
+
+message ActivityEvent {
+  string event_type = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  map<string, string> metadata = 3;
+}
